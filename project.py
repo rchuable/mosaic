@@ -30,7 +30,8 @@ import requests
 from io import BytesIO
 
 def main():
-    st.title("Mosaic Maker - app developed by Regina Chua")
+    st.title("Mosaic Maker")
+    st.subheader("App developed by Regina Chua")
 
     # Initialize
     if 'images' not in st.session_state:
@@ -38,41 +39,60 @@ def main():
 
     # Image upload
     uploaded_files = st.file_uploader("Choose an image...", type=["jpg","jpeg", "png"], accept_multiple_files=True)
-    
-    
-    # Image URL
-    image_urls = st.text_area("Or enter image URLS (one per line)")
-
-    images = []
-
     if uploaded_files:
         for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file)
-            images.append(image)
+            if image not in st.session_state.images:
+                st.session_state.images.append(image)    
     
+    # Image URL
+    image_urls = st.text_area("Or enter image URLS (one per line)")    
     if image_urls:
         urls = image_urls.split('\n')
         for url in urls:
             try:
                 response = requests.get(url)
                 image = Image.open(BytesIO(response.content))
-                images.append(image)
+                if image not in st.session_state.images:
+                    st.session_state.images.append(image)
             except Exception as e:
                 st.error(f"Error loading image from URL: {url}. Error: {e}")
-    if images:
+    
+    # Refresh preview
+    if st.button("Refresh Preview"):
+        st.session_state.images = []
+        if uploaded_files:
+            for uploaded_file in uploaded_files:
+                image = Image.open(uploaded_file)
+                st.session_state.images.append(image)
+        if image_urls:
+            urls = image_urls.split('\n')
+            for url in urls:
+                try:
+                    response = requests.get(url)
+                    image = Image.open(BytesIO(response.content))
+                    st.session_state.images.append(image)
+                except Exception as e:
+                    st.error(f"Error loading image from URL: {url}. Error: {e}")
+
+    # Display images in a grid preview
+    if st.session_state.images:
         st.subheader("Image Preview")
         cols = st.columns(3)
-        for i, img in enumerate(images):
+        for i, img in enumerate(st.session_state.images):
             col = cols[i % 3]
             col.image(img, use_container_width=True)
-    
-    title = st.text_input("Name the image (optional):", value="mosaic.png")
 
+    # Title for mosaic
+    title = st.text_input("Name the mosaic (optional):", value="mosaic.png")
+
+    # Make mosaic
     if st.button("Make Mosaic"):
-        if images:
-            collage = create_mosaic(images)
+        if st.session_state.images:
+            collage = create_mosaic(st.session_state.images)
             st.image(collage, caption=title)
 
+            # Download button
             img_byte_arr = BytesIO()
             collage.save(img_byte_arr, format='PNG')
             img_byte_arr = img_byte_arr.getvalue()
@@ -85,18 +105,3 @@ def create_mosaic(images):
 
 if __name__ == "__main__":
     main() 
-'''
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_container_width=True)
-
-    image_url = st.text_input("Or enter an image URL")
-    if image_url:
-        try:
-            response = requests.get(image_url)
-            image = Image.open(BytesIO(response.content))
-            st.image(image, caption="Image from URL", use_container_width=True)
-        except Exception as e:
-            st.error("Error loading image from URL.")
-
-'''
