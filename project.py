@@ -24,3 +24,27 @@ tests:
 
 '''
 
+import streamlit as st
+from PIL import Image
+import requests
+from io import BytesIO
+
+def main():
+    st.title("Mosaic Maker - app developed by Regina Chua")
+
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg","jpeg", "png"])
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+
+    image_url = st.text_input("Or enter an image URL")
+    if image_url:
+        try:
+            response = requests.get(image_url)
+            image = Image.open(BytesIO(response.content))
+            st.image(image, caption="Image from URL", use_column_width=True)
+        except Exception as e:
+            st.error("Error loading image from URL.")
+
+if __name__ == "__main__":
+    main()
