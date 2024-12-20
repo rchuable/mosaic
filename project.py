@@ -38,7 +38,7 @@ def main():
         st.session_state.images = []
 
     # Image upload
-    uploaded_files = st.file_uploader("Choose an image...", type=["jpg","jpeg", "png"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Choose image/s...", type=["jpg","jpeg", "png"], accept_multiple_files=True)
     if uploaded_files:
         for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file)
@@ -77,7 +77,7 @@ def main():
 
     # Display images in a grid preview
     if st.session_state.images:
-        st.subheader("Image Preview")
+        st.subheader("Mosaic Preview")
         cols = st.columns(3)
         for i, img in enumerate(st.session_state.images):
             col = cols[i % 3]
