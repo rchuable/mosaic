@@ -25,7 +25,7 @@ tests:
 '''
 
 import streamlit as st
-from PIL import Image
+from PIL import Image, ImageOps
 import requests
 from io import BytesIO
 
@@ -101,7 +101,29 @@ def main():
             st.error("Please upload at least one image.")
 
 def create_mosaic(images):
-        pass
+        
+        
+
+        # Determine size
+        max_width = max(img.width for img in images)
+        max_height = max(img.height for img in images)
+        num_columns = 3
+        num_rows = (len(images) + num_columns - 1)
+        mosaic_width = num_columns * max_width
+        mosaic_height = num_rows * max_height
+
+        # Create a new blank image
+        mosaic = Image.new('RGB', (mosaic_width, mosaic_height))
+
+        # Paste images
+        for index, img in enumerate(images):
+            row = index // num_columns
+            col = index % num_columns
+            x = col * max_width
+            y = row * max_height
+            mosaic.paste(ImageOps.fit(img, (max_width, max_height)), (x,y))
+
+        return mosaic
 
 if __name__ == "__main__":
     main() 
