@@ -29,24 +29,21 @@ from PIL import Image, ImageOps
 import requests
 from io import BytesIO
 
-def main():
-    st.title("Mosaic Maker")
-    st.subheader("App developed by Regina Chua")
-
-    # Initialize
+def initialize_session_state():
+    """Initializes the session state for storing images."""
     if 'images' not in st.session_state:
         st.session_state.images = []
 
-    # Image upload
-    uploaded_files = st.file_uploader("Choose image/s...", type=["jpg","jpeg", "png"], accept_multiple_files=True)
+def handle_file_upload(uploaded_files):
+    """Handles image uploads from the user and adds them to session state."""
     if uploaded_files:
         for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file)
             if image not in st.session_state.images:
-                st.session_state.images.append(image)    
-    
-    # Image URL
-    image_urls = st.text_area("Or enter image URLS (one per line)")    
+                st.session_state.images.append(image)
+
+def handle_image_urls(image_urls):
+    """Handles image URLs input by the user and adds them to session state."""
     if image_urls:
         urls = image_urls.split('\n')
         for url in urls:
@@ -57,23 +54,49 @@ def main():
                     st.session_state.images.append(image)
             except Exception as e:
                 st.error(f"Error loading image from URL: {url}. Error: {e}")
-    
+
+def create_mosaic(images):
+    """Creates a mosaic from a list of images."""
+    max_width = max(img.width for img in images)
+    max_height = max(img.height for img in images)
+    num_columns = 3
+    num_rows = (len(images) + num_columns - 1) // num_columns
+    mosaic_width = num_columns * max_width
+    mosaic_height = num_rows * max_height
+
+    # Create a new blank image
+    mosaic = Image.new('RGB', (mosaic_width, mosaic_height))
+
+    # Paste images
+    for index, img in enumerate(images):
+        row = index // num_columns
+        col = index % num_columns
+        x = col * max_width
+        y = row * max_height
+        mosaic.paste(ImageOps.fit(img, (max_width, max_height)), (x, y))
+
+    return mosaic
+
+def main():
+    st.title("Mosaic Maker")
+    st.subheader("App developed by Regina Chua")
+
+    # Initialize session state
+    initialize_session_state()
+
+    # Image upload
+    uploaded_files = st.file_uploader("Choose image/s...", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
+    handle_file_upload(uploaded_files)
+
+    # Image URL
+    image_urls = st.text_area("Or enter image URLS (one per line)")
+    handle_image_urls(image_urls)
+
     # Refresh preview
     if st.button("Refresh Preview"):
         st.session_state.images = []
-        if uploaded_files:
-            for uploaded_file in uploaded_files:
-                image = Image.open(uploaded_file)
-                st.session_state.images.append(image)
-        if image_urls:
-            urls = image_urls.split('\n')
-            for url in urls:
-                try:
-                    response = requests.get(url)
-                    image = Image.open(BytesIO(response.content))
-                    st.session_state.images.append(image)
-                except Exception as e:
-                    st.error(f"Error loading image from URL: {url}. Error: {e}")
+        handle_file_upload(uploaded_files)
+        handle_image_urls(image_urls)
 
     # Display images in a grid preview
     if st.session_state.images:
@@ -100,30 +123,5 @@ def main():
         else:
             st.error("Please upload at least one image.")
 
-def create_mosaic(images):
-    # Determine size
-    max_width = max(img.width for img in images)
-    max_height = max(img.height for img in images)
-    num_columns = 3
-    num_rows = (len(images) + num_columns - 1) // num_columns
-    mosaic_width = num_columns * max_width
-    mosaic_height = num_rows * max_height
-
-    # Create a new blank image
-    mosaic = Image.new('RGB', (mosaic_width, mosaic_height))
-
-    # Paste images
-    for index, img in enumerate(images):
-        row = index // num_columns
-        col = index % num_columns
-        x = col * max_width
-        y = row * max_height
-        mosaic.paste(ImageOps.fit(img, (max_width, max_height)), (x, y))
-    
-    # Crop the mosaic to remove any excess space 
-    mosaic = mosaic.crop((0, 0, mosaic_width, mosaic_height))
-
-    return mosaic
-
 if __name__ == "__main__":
-    main() 
+    main()
