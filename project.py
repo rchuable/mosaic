@@ -29,6 +29,8 @@ from PIL import Image, ImageOps
 import requests
 from io import BytesIO
 
+st.set_page_config(page_title="Mosaic Maker by Regina Chua", page_icon="🖼️")
+
 def initialize_session_state():
     """Initializes the session state for storing images."""
     if 'images' not in st.session_state:
