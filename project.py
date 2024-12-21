@@ -77,7 +77,7 @@ def main():
 
     # Display images in a grid preview
     if st.session_state.images:
-        st.subheader("Mosaic Preview")
+        st.subheader("Images in Memory")
         cols = st.columns(3)
         for i, img in enumerate(st.session_state.images):
             col = cols[i % 3]
