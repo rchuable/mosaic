@@ -45,6 +45,18 @@ st.markdown(
          unsafe_allow_html=True
      )
 
+# Add my GitHub link with logo
+st.markdown(
+    """
+    <div style="text-align: right;">
+        <a href="https://github.com/rchuable" target="_blank">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="40">
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True
+) 
+
 # 1st function - initialize session
 def initialize_session_state():
     if 'images' not in st.session_state:
