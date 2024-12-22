@@ -17,9 +17,9 @@ Any pip-installable libraries that your project requires must be listed, one per
 import pytest
 from io import BytesIO
 from PIL import Image
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import streamlit as st
-from project import initialize_session_state, handle_file_upload
+from project import initialize_session_state, handle_file_upload, handle_image_urls
 
 def test_initialize_session_state():
     with patch.dict(st.session_state, {}, clear=True):
@@ -43,6 +43,21 @@ def test_handle_file_upload():
         handle_file_upload(uploaded_files)
         assert len(st.session_state.images) == 1, "One image should be added to session state."
         assert st.session_state.images[0].size == (100, 100), "The image should be 100x100 in size."
+
+def test_handle_image_urls():
+    test_url = "https://i.pinimg.com/736x/7b/1b/bb/7b1bbb5bc4947531f58ec6a3109ba18e.jpg"
+    test_image = create_test_image("blue", 100, 100)
+    
+    with patch('requests.get') as mock_get:
+        mock_response = MagicMock()
+        mock_response.content = test_image.getvalue()
+        mock_get.return_value = mock_response
+
+        with patch.dict(st.session_state, {}, clear=True):
+            initialize_session_state()
+            handle_image_urls(test_url)
+            assert len(st.session_state.images) == 1, "One image should be added to session state."
+            assert st.session_state.images[0].size == (100, 100), "The image should be 100x100 in size."
 
 # Run the tests
 if __name__ == "__main__":
