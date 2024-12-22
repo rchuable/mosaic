@@ -1,5 +1,5 @@
 # MOSAIC MAKER
-#### Video Demo:
+#### Video Demo: https://youtu.be/COVwBVFQV_I
 #### Description:
 
 ![Screenshot of Mosaic Maker UI](images/mosaic_maker_ui.jpg)
@@ -33,6 +33,6 @@ And that's the app! Give it a spin by visiting https://mosaicmaker.streamlit.app
 
 [![Open in Streamlit](https://img.shields.io/badge/Open%20in-Streamlit-brightgreen)](https://mosaicmaker.streamlit.app/)
 
-I want to give a shoutout to deepankarvarma who made an Image Collage app using Python. It was a great reference for me to build my app (and also a good source for the sick background image!). Streamlit documentation was also extremely helpful in building this app, from how to initialize a session to uploading files and more. I also want to give credits to Copilot for helping me troubleshoot the test script.
+I want to give a shoutout to deepankarvarma who made an Image Collage app using Python. It was a great reference for me to build my app (and also a good source for the sick background image of the app!). Streamlit documentation was also extremely helpful in building this app, from how to initialize a session to uploading files and more. I also want to give credits to Copilot for helping me troubleshoot the test script.
 
 This app was created to complete https://cs50.harvard.edu/python/2022/project/ but I hope that this is also useful for you and your grid-making needs. For instance, a resolution or vision board for the coming new year. Happy Mosaic-ing!
