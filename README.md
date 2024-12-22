@@ -7,7 +7,7 @@ Here is sample mosaic output for a Jinx & Isha reference:
 ![Mosaic output of Jinx from Arcane](images/jinx.png)
 
 Then here is my art derived from this reference:
-![Art by Courage artwork of Jinx from Arcane, titled Jinx Leading the People, depicted from Eugene Delacroix's Liberty Leading the People](https://i.pinimg.com/736x/7b/1b/bb/7b1bbb5bc4947531f58ec6a3109ba18e.jpg, width=100%)
+![Art by Courage artwork of Jinx from Arcane, titled Jinx Leading the People, depicted from Eugene Delacroix's Liberty Leading the People]<img src="https://i.pinimg.com/736x/7b/1b/bb/7b1bbb5bc4947531f58ec6a3109ba18e.jpg", width=100%>
 
 Functions:
 - Add images
