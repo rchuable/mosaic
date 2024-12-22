@@ -71,7 +71,17 @@ def handle_image_urls(image_urls):
             except Exception as e:
                 st.error(f"Error loading image from URL: {url}. Error: {e}")
 
-# 4th function - making the mosaic
+# 4th function - previewing the images
+def display_image_grid(images):
+    if images:
+        st.subheader("Images in Memory")
+        cols = st.columns(3)
+        for i, img in enumerate(images):
+            col = cols[i % 3]
+            col.image(img, use_container_width=True)
+
+
+# 5th function - making the mosaic
 def create_mosaic(images):
     max_width = max(img.width for img in images)
     max_height = max(img.height for img in images)
@@ -117,13 +127,8 @@ def main():
         handle_file_upload(uploaded_files)
         handle_image_urls(image_urls)
 
-    # Display images in a grid preview
-    if st.session_state.images:
-        st.subheader("Images in Memory")
-        cols = st.columns(3)
-        for i, img in enumerate(st.session_state.images):
-            col = cols[i % 3]
-            col.image(img, use_container_width=True)
+    # Call the display function in main
+    display_image_grid(st.session_state.images)
 
     # Title for mosaic
     st.header("Export as Mosaic")
