@@ -19,7 +19,7 @@ from io import BytesIO
 from PIL import Image
 from unittest.mock import patch, MagicMock
 import streamlit as st
-from project import initialize_session_state, handle_file_upload, handle_image_urls
+from project import initialize_session_state, handle_file_upload, handle_image_urls, display_image_grid, create_mosaic
 
 def test_initialize_session_state():
     with patch.dict(st.session_state, {}, clear=True):
@@ -45,7 +45,7 @@ def test_handle_file_upload():
         assert st.session_state.images[0].size == (100, 100), "The image should be 100x100 in size."
 
 def test_handle_image_urls():
-    test_url = "https://i.pinimg.com/736x/7b/1b/bb/7b1bbb5bc4947531f58ec6a3109ba18e.jpg"
+    test_url = "https://i.pinimg.com/736x/7b/1b/bb/7b1bbb5bc4947531f58ec6a3109ba18e.jpg" # my art as a placeholder test
     test_image = create_test_image("blue", 100, 100)
     
     with patch('requests.get') as mock_get:
@@ -58,6 +58,43 @@ def test_handle_image_urls():
             handle_image_urls(test_url)
             assert len(st.session_state.images) == 1, "One image should be added to session state."
             assert st.session_state.images[0].size == (100, 100), "The image should be 100x100 in size."
+
+def test_display_image_grid():
+    test_image1 = create_test_image("red", 100, 100)
+    test_image2 = create_test_image("green", 100, 100)
+    test_image3 = create_test_image("blue", 100, 100)
+    images = [Image.open(test_image1), Image.open(test_image2), Image.open(test_image3)]
+
+    with patch.dict(st.session_state, {}, clear=True):
+        initialize_session_state()
+        st.session_state.images = images
+
+        with patch('streamlit.columns') as mock_columns:
+            mock_cols = [MagicMock() for _ in range(3)]
+            mock_columns.return_value = mock_cols
+
+            # Mock the image call on each column
+            for col in mock_cols:
+                col.image = MagicMock()
+
+            display_image_grid(st.session_state.images)
+
+            mock_columns.assert_called_once_with(3)
+            for col in mock_cols:
+                col.image.assert_called_once()
+
+def test_create_mosaic():
+    test_image1 = create_test_image("red", 100, 100)
+    test_image2 = create_test_image("green", 100, 100)
+    test_image3 = create_test_image("blue", 100, 100)
+    images = [test_image1, test_image2, test_image3]
+
+    mosaic = create_mosaic(images)
+
+    assert mosaic.size == (300, 100), f"Unexpected mosaic size: {mosaic.size}"
+    assert mosaic.getpixel((50, 50)) == (255, 0, 0), "Top left image should be red"
+    assert mosaic.getpixel((150, 50)) == (0, 255, 0), "Top middle image should be green"
+    assert mosaic.getpixel((250, 50)) == (0, 0, 255), "Top right image should be blue"
 
 # Run the tests
 if __name__ == "__main__":
