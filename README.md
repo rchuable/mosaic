@@ -1,8 +1,11 @@
 # MOSAIC MAKER
 #### Video Demo:
 #### Description:
+
+![Screenshot of Mosaic Maker UI](images/mosaic_maker_ui.jpg)
 Mosaic Maker is streamlit application I designed to quickly collage images in a 3-column grid to use as a reference. This can apply to vision boards, art reference sheets, palette combinations, mood boards, meme grids (e.g., favorite anime 3x3) and more.
 
+In my case as a digital artist, I wanted 
 Here is sample mosaic output for a Jinx & Isha reference:
 ![Mosaic output of Jinx from Arcane](images/jinx.png)
 
@@ -16,6 +19,6 @@ Functions:
 - Collage the images into a 3-column mosaic
 - Download the mosaic as an image with the customized filename
 
-![Screenshot of Mosaic Maker UI](images/mosaic_maker_ui.jpg)
+[insert button to streamlit app here]
 
 Created to complete https://cs50.harvard.edu/python/2022/project/

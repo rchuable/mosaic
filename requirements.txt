@@ -1,6 +1,5 @@
 streamlit
 pillow
 requests
-io
 PIL
 pytest
